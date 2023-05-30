@@ -23,9 +23,6 @@ function main()
         end
     end
 
-    turtle.turnRight()
-    moveForward((STRIP_COUNT + 1) * STRIP_GAP)
-
     depositToChest()
 end
 
@@ -71,7 +68,7 @@ function dig1by2(distance)
     for i=0, distance-1 do
         keepDigging()
         turtle.forward()
-        keepDiggingUp()
+        turtle.digDown()
         if i%TORCH_GAP == 0 then
             placeTorch()
             discardCobble()
@@ -94,10 +91,8 @@ function reverseBack(distance)
 end
 
 function placeTorch()
-    turtle.turnLeft()
     turtle.select(1)
-    turtle.placeUp()
-    turtle.turnRight()
+    turtle.placeDown()
 end
 
 function strafeLeft(distance)
@@ -107,6 +102,8 @@ function strafeLeft(distance)
 end
 
 function depositToChest()
+    turtle.turnRight()
+    moveForward((STRIP_COUNT + 1) * (STRIP_GAP + 1))
     local success, data = turtle.inspect()
     if success then
         if data.name ~= "minecraft:chest" and data.name ~= "minecraft:trapped_chest" then
@@ -135,16 +132,10 @@ function discardCobble()
     end
 end
 
--- Use these functions to avoid complications from gravel
+-- Use this function to avoid complications from gravel
 function keepDigging()
     while turtle.detect() do
         turtle.dig()
-        sleep(1)
-    end
-end
-function keepDiggingUp()
-    while turtle.detectUp() do
-        turtle.digUp()
         sleep(1)
     end
 end
